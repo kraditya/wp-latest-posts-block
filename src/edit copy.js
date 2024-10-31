@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { RawHTML } from '@wordpress/element';
 // eslint-disable-next-line @wordpress/no-unsafe-wp-apis
-import { format, dateI18n, getSettings } from '@wordpress/date';
+import { format, dateI18n, __experimentalGetSettings } from '@wordpress/date';
 import { useBlockProps } from '@wordpress/block-editor';
 import { useSelect } from '@wordpress/data';
 import './editor.scss';
@@ -31,7 +31,7 @@ export default function Edit({ attributes }) {
 							{displayFeaturedImage && featuredImage && (
 								<img
 									src={
-										featuredImage.media_details.sizes.full
+										featuredImage.media_details.sizes.large
 											.source_url
 									}
 									alt={featuredImage.alt_text}
@@ -49,7 +49,8 @@ export default function Edit({ attributes }) {
 							{post.date_gmt && (
 								<time dateTime={format('c', post.date_gmt)}>
 									{dateI18n(
-										getSettings().formats.date,
+										__experimentalGetSettings().formats
+											.date,
 										post.date_gmt
 									)}
 								</time>
