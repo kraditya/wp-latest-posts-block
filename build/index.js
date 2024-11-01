@@ -42,16 +42,32 @@ function Edit(_ref) {
     numberOfPosts,
     displayFeaturedImage,
     order,
-    orderBy
+    orderBy,
+    categories
   } = attributes;
+  const catIDs = categories && categories.length > 0 ? categories.map(cat => cat.id) : [];
   const posts = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_5__.useSelect)(select => {
     return select('core').getEntityRecords('postType', 'post', {
       per_page: numberOfPosts,
       _embed: true,
       order,
-      orderby: orderBy
+      orderby: orderBy,
+      categories: catIDs
     });
-  }, [numberOfPosts, order, orderBy]);
+  }, [numberOfPosts, order, orderBy, categories]);
+  const allCats = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_5__.useSelect)(select => {
+    return select('core').getEntityRecords('taxonomy', 'category', {
+      per_page: -1
+    });
+  }, []);
+  const catSuggestions = {};
+
+  if (allCats) {
+    for (let i = 0; i < allCats.length; i++) {
+      const cat = allCats[i];
+      catSuggestions[cat.name] = cat;
+    }
+  }
 
   const onDisplayFeaturedImageChange = value => {
     setAttributes({
@@ -62,6 +78,17 @@ function Edit(_ref) {
   const onNumberOfItemsChange = value => {
     setAttributes({
       numberOfPosts: value
+    });
+  };
+
+  const onCategoryChange = values => {
+    const hasNoSuggestions = values.some(value => typeof value === 'string' && !catSuggestions[value]);
+    if (hasNoSuggestions) return;
+    const updatedCats = values.map(token => {
+      return typeof token === 'string' ? catSuggestions[token] : token;
+    });
+    setAttributes({
+      categories: updatedCats
     });
   };
 
@@ -81,7 +108,10 @@ function Edit(_ref) {
     order: order,
     onOrderChange: value => setAttributes({
       order: value
-    })
+    }),
+    categorySuggestions: catSuggestions,
+    selectedCategories: categories,
+    onCategoryChange: onCategoryChange
   }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.useBlockProps)(), posts && posts.map(post => {
     const featuredImage = post._embedded && post._embedded['wp:featuredmedia'] && post._embedded['wp:featuredmedia'].length > 0 && post._embedded['wp:featuredmedia'][0];
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
