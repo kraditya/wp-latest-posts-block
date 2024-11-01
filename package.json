@@ -31,7 +31,8 @@
 		"@wordpress/data": "^6.15.0",
 		"@wordpress/date": "^5.11.0",
 		"@wordpress/element": "^6.11.0",
-		"@wordpress/i18n": "^4.2.4"
+		"@wordpress/i18n": "^4.2.4",
+		"@wordpress/components": "^19.1.5"
 	},
 	"devDependencies": {
 		"@wordpress/eslint-plugin": "^9.3.0",
